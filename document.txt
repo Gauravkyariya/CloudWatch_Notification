@@ -1,0 +1,27 @@
+EC2 Monitoring and Alerts with CloudWatch
+High CPU : CloudWatch Alarm : CPUUtilization is a default EC2 metric
+High memory : CloudWatch Alarm + CloudWatch Agent : Memory is not a default EC2 metric, so the agent must publish it
+Instance stopped : EventBridge rule : State changes are events, not metrics
+Instance started : EventBridge rule : State changes are events, not metrics
+
+  1. Create the SNS topic (notification channel)
+  2. CPU utilization alarm
+      1. Open CloudWatch → Alarms → All alarms → Create alarm.
+      2. Click Select metric → EC2 → Per-Instance Metrics.
+      3. Select CPUUtilization for your instance ID, then click Select metric.
+  3.Memory utilization alarm
+      1 Create an IAM role for the agent
+      2. Open IAM → Roles → Create role.
+      3. Trusted entity: AWS service, use case EC2.
+      4. Attach the policy CloudWatchAgentServerPolicy.
+      5. Install the CloudWatch Agent
+      6. Create the agent configuration file
+
+  4. Create the memory alarm
+      1. Open CloudWatch → Alarms → Create alarm → Select metric.
+      2. Choose CWAgent → InstanceId, then select mem_used_percent for your instance.
+
+  5. Alerts for instance stop and start
+      1. Open Amazon EventBridge → Rules → Create rule.
+      2. Select Advanced builder (not Enhanced builder).
+      3. Name the rule ec2-state-change-alert, Event bus default, Rule type Rule with an event pattern.
